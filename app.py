@@ -1,56 +1,78 @@
-import os
-import subprocess
 import time
-from discord_webhooks import DiscordWebhooks
+import p4
+import discord
+import utils
 
-class PerforceLogger():
-    def __init__(self, webhook_url):
-      """ Initializes a 30 second timer used to check if commits have been made.  """
-      self.webhook_url = webhook_url
-      self.global_store = {
-        'latest_change': ''
-      }
+class p4bot:
 
-    def check_p4(self):
-      """ Runs the p4 changes command to get the latest commits from the server. """
-      p4_changes = subprocess.Popen('p4 changes -t -m 1 -l', stdout=subprocess.PIPE, shell=True)
-      return p4_changes.stdout.read().decode('ISO-8859-1')
+    def __init__(self):
+        self.storage = p4.Storage()
+        try:
+            self.config = utils.create_config("config.json")
+            self.discord = discord.Discord(self.config)
+            self.perforce = p4.init(self.config)
+        except AssertionError as error:
+                assert False, error
 
-    def check_for_changes(self, output):
-      """ Figures out if the latest p4 change is new or should be thrown out. """
-      if output != self.global_store['latest_change']:
-        self.global_store['latest_change'] = output
+    def make_content(self, change):
+        content = change.header + change.text
+        return content
 
-        if '*pending*' in output: 
-          return ''
+    def send_changes(self, _changes):
+        messages = []
+        changes = self.filter(_changes)
+        print "[p4bot] sends "+str(len(changes))+" messages"
+        for change in changes:
+            swarm_urls = p4.make_swarm_urls(change, self.perforce)
+            message = discord.Message()
+            message.user = change.user
+            message.header = change.header.replace(
+                change.changelist, swarm_urls.changelist)
+            message.content = change.text
+            messages.append(message)
+            message.footer = swarm_urls.changelist
+            message.color = self.get_color(change)
+            self.discord.send(message)
 
+    def filter(self, changes):
+        if self.config['use_filter']:
+            filtered_changes = []
+            for change in changes:
+                if self.has_filter(change):
+                    filtered_changes.append(change)
+            return filtered_changes
         else:
-          return output
+            return changes
 
-      else: 
-        return ''
+    def has_filter(self, change):
+        for filter in self.config["filters"]:
+            if change.text.find(filter["tag"]) != -1:
+                return True
+        return False
 
-    def post_changes(self):
-      """ Posts the changes to the Discord server via a webhook. """
-      output = self.check_p4()
-      payload = self.check_for_changes(output)
+    def get_color(self, change):
+        for filter in self.config["filters"]:
+            if change.text.find(filter["tag"]) != -1:
+                    return int(filter['color'],16)
+        return 0xc8702a
 
-      if payload != '':
-        message = DiscordWebhooks(self.webhook_url)
-        message.set_content(color=0xc8702a, description='`%s`' % (payload))
-        message.set_author(name='Perforce')
-        message.set_footer(text='https://github.com/JamesIves/perforce-commit-discord-bot', ts=True)
-        message.send()
-
-      else:
-        return
+    def pull(self):
+        interval = float(self.config["pull_interval"])
+        timer = time.time()
+        while True:
+            try:
+                changes = p4.request_changes(self.perforce)
+                new_changes = p4.check_for_changes(self.storage,changes)
+                print "[p4bot] found "+str(len(new_changes))+" changes"
+                self.send_changes(new_changes)
+                time.sleep(interval - ((time.time() - timer) % interval))
+            except  AssertionError as error:
+                assert False,error
+            except KeyboardInterrupt:
+                print "[p4bot] shutdown"
+                quit()
 
 if __name__ == "__main__":
-  """ Initializes the application loop that checks Perforce for changes. """
-  DISCORD_WEBHOOK_URL = os.environ.get('DISCORD_WEBHOOK_URL')
-  logger = PerforceLogger(DISCORD_WEBHOOK_URL)
-  timer = time.time()
-
-  while True:
-    logger.post_changes()
-    time.sleep(30.0 - ((time.time() - timer) % 30.0))
+    app = p4bot()
+    print "[p4bot] will pull every "+str(app.config['pull_interval'])+" seconds from "+app.config['p4']["host"]
+    app.pull()

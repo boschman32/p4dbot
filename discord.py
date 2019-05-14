@@ -1,0 +1,28 @@
+from discord_webhooks import DiscordWebhooks
+
+class discord_data:
+    url = None
+    name = None
+
+class Message:
+    header = ""
+    content = ""
+    user = ""
+    footer = ""
+    color = 0xc8702a
+
+class Discord:
+    def __init__(self,config):
+        self.data = discord_data()
+        self.data.url = config['discord']['webhook_url']
+        self.data.name = config['discord']['name']
+        self.webhook = DiscordWebhooks(self.data.url)
+
+    def send(self,message):
+        if self.webhook != None:
+            self.webhook.set_content(color=message.color, title='%s' % (message.header),description='%s' % (message.content))
+            self.webhook.set_author(name=message.user)
+            self.webhook.set_footer(text=message.footer, ts=True)
+            self.webhook.send()
+        else:
+            assert False,"Discord was not initilized"
