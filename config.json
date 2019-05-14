@@ -1,0 +1,24 @@
+{
+    "p4": {
+        "host": "",
+        "user": "",
+        "password": null,
+        "depot": null,
+        "limit": 5,
+        "status": "submitted",
+        "decode": "ISO-8859-1",
+        "swarm": ""
+    },
+    "pull_interval": 30.0,
+    "filters": [
+        {
+            "tag": "ADD",
+            "color": "ff0000"
+        }
+    ],
+    "use_filter": true,
+    "discord": {
+        "webhook_url": "",
+        "name": ""
+    }
+}
