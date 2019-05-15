@@ -46,7 +46,7 @@ class p4bot:
 
     def has_filter(self, change):
         for filter in self.config["filters"]:
-            if change.text.find(filter["tag"]) != -1:
+            if change.text.lower().find(filter["tag"].lower()) != -1:
                 return True
         return False
 
