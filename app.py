@@ -52,7 +52,7 @@ class p4bot:
 
     def get_color(self, change):
         for filter in self.config["filters"]:
-            if change.text.find(filter["tag"]) != -1:
+            if change.text.lower().find(filter["tag"].lower()) != -1:
                     return int(filter['color'],16)
         return 0xc8702a
 
