@@ -18,11 +18,10 @@ class p4bot_review:
 
     def run(self):
         self.server = net.make_server(self.config["server"]["host"],self.config["server"]["port"])
-        
-        self.server.serve_forever()
 
 
 bot = p4bot_review()
 bot.run()
+bot.server.serve_forever()
 
 
