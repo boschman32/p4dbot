@@ -106,6 +106,8 @@ def build_command(perforce):
     command = "p4 "+host+" "+user+" "+password+" changes -l -m "+str(perforce.limit)+" -s "+status+" "+depo
     return command
 
+def request_review(perforce):
+    return
 
 def request_changes(perforce):
     command = build_command(perforce)
