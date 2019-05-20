@@ -20,5 +20,9 @@
     "discord": {
         "webhook_url": "",
         "name": ""
+    },
+    "server":{
+        "host":"",
+        "port":8080
     }
 }

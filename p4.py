@@ -2,6 +2,7 @@ from enum import Enum
 import subprocess
 import os
 import re
+
 class Change:
     user = "Perforce User"
     changelist = ""

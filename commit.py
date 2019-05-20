@@ -3,7 +3,7 @@ import p4
 import discord
 import utils
 
-class p4bot:
+class p4bot_commit:
 
     def __init__(self):
         self.storage = p4.Storage()
@@ -73,6 +73,6 @@ class p4bot:
                 quit()
 
 if __name__ == "__main__":
-    app = p4bot()
-    print "[p4bot] will pull every "+str(app.config['pull_interval'])+" seconds from "+app.config['p4']["host"]
+    app = p4bot_commit()
+    print "[p4bot_commit] will pull every "+str(app.config['pull_interval'])+" seconds from "+app.config['p4']["host"]
     app.pull()
