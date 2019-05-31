@@ -11,8 +11,8 @@ class httpHandler(BaseHTTPRequestHandler):
         # Send the html message
         o = urlparse(self.path)
         query = parse_qs(o.query)
-        get_handler.get_handler(query)
-        self.wfile.write("{}")
+        out = get_handler.get_handler(query)
+        self.wfile.write(out)
         return
 
 def make_server(host,port,handler):
