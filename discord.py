@@ -10,6 +10,7 @@ class Message:
     user = ""
     footer = ""
     color = 0xc8702a
+    url = None
 
 class Discord:
     def __init__(self,config):
@@ -20,7 +21,10 @@ class Discord:
 
     def send(self,message):
         if self.webhook != None:
-            self.webhook.set_content(color=message.color, title='%s' % (message.header),description='%s' % (message.content))
+            if message.url != None:
+                self.webhook.set_content(color=message.color, title='%s' % (message.header),description='%s' % (message.content),url=message.url)
+            else:
+                self.webhook.set_content(color=message.color, title='%s' % (message.header),description='%s' % (message.content))
             self.webhook.set_author(name=message.user)
             self.webhook.set_footer(text=message.footer, ts=True)
             self.webhook.send()
