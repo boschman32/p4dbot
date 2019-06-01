@@ -19,7 +19,8 @@
     "use_filter": true,
     "discord": {
         "webhook_url": "",
-        "name": ""
+        "name": "Swarm Review",
+        "users":[{"swarm":"User1","discord":"123123123"},{"swarm":"User2","discord":"12233445"}]
     },
     "server":{
         "host":"",
