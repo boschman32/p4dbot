@@ -13,10 +13,10 @@ class Message:
     url = None
 
 class Discord:
-    def __init__(self,config):
+    def __init__(self,config,webhook):
         self.data = discord_data()
-        self.data.url = config['discord']['webhook_url']
-        self.data.name = config['discord']['name']
+        self.data.url = config['discord']['webhooks'][webhook]['url']
+        self.data.name = config['discord']['webhooks'][webhook]['name']
         self.webhook = DiscordWebhooks(self.data.url)
 
     def send(self,message):

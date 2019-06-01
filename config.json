@@ -9,7 +9,7 @@
         "decode": "ISO-8859-1",
         "swarm": ""
     },
-    "pull_interval": 30.0,
+    "pull_interval": 30,
     "filters": [
         {
             "tag": "ADD",
@@ -18,12 +18,29 @@
     ],
     "use_filter": true,
     "discord": {
-        "webhook_url": "",
-        "name": "Swarm Review",
-        "users":[{"swarm":"User1","discord":"123123123"},{"swarm":"User2","discord":"12233445"}]
+        "webhooks": {
+            "commit_webhook": {
+                "url": "",
+                "name": "Perforce Commit"
+            },
+            "review_webhook": {
+                "url": "",
+                "name": "Swarm Review"
+            }
+        },
+        "users": [
+            {
+                "swarm": "User1",
+                "discord": "123123123"
+            },
+            {
+                "swarm": "User2",
+                "discord": "12233445"
+            }
+        ]
     },
-    "server":{
-        "host":"",
-        "port":8080
+    "server": {
+        "host": "",
+        "port": 8080
     }
 }
