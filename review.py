@@ -16,7 +16,7 @@ class p4bot_review:
         self.exit_flag = True
         try:
             self.config = utils.create_config("config.json")
-            self.discord = discord.Discord(self.config)
+            self.discord = discord.Discord(self.config, "review_webhook")
             self.perforce = p4.init(self.config)
         except AssertionError as error:
             mutex.acquire()

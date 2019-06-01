@@ -9,7 +9,7 @@ class p4bot_commit:
         self.storage = p4.Storage()
         try:
             self.config = utils.create_config("config.json")
-            self.discord = discord.Discord(self.config)
+            self.discord = discord.Discord(self.config, "commit_webhook")
             self.perforce = p4.init(self.config)
         except AssertionError as error:
                 assert False, error
