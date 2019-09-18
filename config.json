@@ -1,7 +1,7 @@
 {
     "p4": {
         "host": "",
-        "user": "",
+        "user": null,
         "password": null,
         "depot": null,
         "limit": 5,
@@ -12,8 +12,12 @@
     "pull_interval": 30.0,
     "filters": [
         {
-            "tag": "ADD",
-            "color": "ff0000"
+            "tag": "[Added]",
+            "color": "FF0000"
+        },
+        {
+            "tag": "[Fix]",
+            "color": "FFFFFF"
         }
     ],
     "use_filter": true,

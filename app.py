@@ -21,7 +21,7 @@ class p4bot:
     def send_changes(self, _changes):
         messages = []
         changes = self.filter(_changes)
-        print "[p4bot] sends "+str(len(changes))+" messages"
+        print("[p4bot] sends "+ str(len(changes)) + " messages")
         for change in changes:
             swarm_urls = p4.make_swarm_urls(change, self.perforce)
             message = discord.Message()
@@ -29,9 +29,10 @@ class p4bot:
             message.header = change.header.replace(
                 change.changelist, swarm_urls.changelist)
             message.content = change.text
-            messages.append(message)
             message.footer = swarm_urls.changelist
             message.color = self.get_color(change)
+
+            messages.append(message)
             self.discord.send(message)
 
     def filter(self, changes):
@@ -63,16 +64,16 @@ class p4bot:
             try:
                 changes = p4.request_changes(self.perforce)
                 new_changes = p4.check_for_changes(self.storage,changes)
-                print "[p4bot] found "+str(len(new_changes))+" changes"
+                print("[p4bot] found " + str(len(new_changes)) + " changes")
                 self.send_changes(new_changes)
                 time.sleep(interval - ((time.time() - timer) % interval))
             except  AssertionError as error:
                 assert False,error
             except KeyboardInterrupt:
-                print "[p4bot] shutdown"
+                print("[p4bot] shutdown")
                 quit()
 
 if __name__ == "__main__":
     app = p4bot()
-    print "[p4bot] will pull every "+str(app.config['pull_interval'])+" seconds from "+app.config['p4']["host"]
+    print("[p4bot] will pull every "+str(app.config['pull_interval'])+" seconds from "+app.config['p4']["host"])
     app.pull()

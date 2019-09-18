@@ -43,7 +43,7 @@ def make_status(input):
         return Status.SUBMITTED
     elif input == "pending":
         return Status.PENDING
-    elif input == "selved":
+    elif input == "shelved":
         return Status.SHELVED
     else:
         return Status.INVALID
@@ -92,17 +92,21 @@ def build_command(perforce):
     user = ''
     if perforce.server.user != None:
         user = "-u "+ perforce.server.user
+
     password = ''
     if perforce.server.password != None:
         password = "-P "+perforce.server.password
+
     depo = ''
     if perforce.depot != None:
         depo = perforce.depot
-    host = ""
+
+    host = ''
     if perforce.server.host != None and perforce.server.host != "":
-        host = "-p "+perforce.server.host
+        host = "-H "+perforce.server.host
     
     command = "p4 "+host+" "+user+" "+password+" changes -l -m "+str(perforce.limit)+" -s "+status+" "+depo
+    print("[p4bot] running command: " + command)
     return command
 
 
@@ -115,7 +119,7 @@ def request_changes(perforce):
     change = Change()
     for line in p4_changes:
         content = line.decode(perforce.server.decode)
-        match = re.search(regex,content)
+        match = re.search(regex, content)
         if match != None:
             user_match = re.search(user_regex,content)
             changelist = match.group(2)
